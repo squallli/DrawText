@@ -34,9 +34,9 @@ public class PrintBitmap {
 	public static void main(String[] args){
 		//Gson to Json
 		Gson gson = new Gson();
-		//找出特定印表機並指定使用
+
 		String printname = "";
-		//取得資料庫資料
+
 		String orgString = "Select * from PRINTLOG Where Flag='0'";
 		String[] strErrMag = new String[20];
 		pi = new PrintInfo();
@@ -51,7 +51,7 @@ public class PrintBitmap {
 			
 				System.out.println(object);
 				System.out.println(object.get("PRINTDATA"));
-				//彙整相關列印資訊
+
 				pi.setPRINTDATE(object.get("PRINTDATE").toString());
 				pi.setPRINTTIME(object.get("PRINTTIME").toString());
 				pi.setPRINTNAME(object.get("PRINTNAME").toString());
@@ -61,18 +61,16 @@ public class PrintBitmap {
 				// JSON to Java object, read it from a Json String.
 				printname = object.get("PRINTNAME").toString();
 				if(printname.trim() == ""){
-					System.out.println("未設定有效印表機。");
-					//寫入資料庫錯誤
+
 					PSD.UpDatePrintDB(pi.getPRINTDATE(), pi.getPRINTTIME(), pi.getPRINTIP(), "Print Name Error。", "2");
 					continue;
 				}
 				
-				System.out.println("使用 " + printname + " 進行列印。");
+
 				
 				//Print Qty
 				if(pi.getQTY().intValueExact() < 1){
-					System.out.println("列印數量低於1。");
-					//寫入資料庫錯誤
+
 					PSD.UpDatePrintDB(pi.getPRINTDATE(), pi.getPRINTTIME(), pi.getPRINTIP(), "Print Qty Error。", "2");
 					continue;
 				}
@@ -83,7 +81,7 @@ public class PrintBitmap {
 				}catch (Exception e) {
 					e.toString();
 					System.out.println("gson Exception " + e.toString());
-					//寫入資料庫錯誤
+
 					PSD.UpDatePrintDB(pi.getPRINTDATE(), pi.getPRINTTIME(), pi.getPRINTIP(), "gson Exception", "2");
 					continue;
 				}
@@ -94,20 +92,20 @@ public class PrintBitmap {
 			
 				try {
 					oneThread.join();
-					//寫入資料庫錯誤
+
 					PSD.UpDatePrintDB(pi.getPRINTDATE(), pi.getPRINTTIME(), pi.getPRINTIP(), "", "1");
 				} catch (InterruptedException e) {
-					// TODO 自動產生的 catch 區塊
+
 					e.printStackTrace();
 					System.out.println("InterruptedException");
-					//寫入資料庫錯誤
+
 					PSD.UpDatePrintDB(pi.getPRINTDATE(), pi.getPRINTTIME(), pi.getPRINTIP(), "Interrupted Exception", "2");
 				}
-				System.out.println("程式結束");
+
 			
 				oneRunnable = null; 
 				oneThread = null;
-				// 建議回收物件 
+
 				System.gc(); 
 			}
 		}
